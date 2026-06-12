@@ -148,7 +148,7 @@
 
 <script>
 var RELAY = "https://ntfy.sh";
-var es = null, token = "";
+var es = null, token = "", auth = "";
 
 function $(id) { return document.getElementById(id); }
 
@@ -159,9 +159,20 @@ function showCtl(yes) {
   $("ctl").classList.toggle("show", yes);
 }
 
+/* auth opzionale (ntfy access token, arriva nel pairing come canale@tk_...):
+   header sulle POST, query ?auth= (base64) sulle sottoscrizioni SSE */
+function authHeaders() {
+  return auth ? { Authorization: "Bearer " + auth } : {};
+}
+function authQuery() {
+  if (!auth) return "";
+  return "&auth=" + encodeURIComponent(btoa("Bearer " + auth).replace(/=+$/, ""));
+}
+
 function publish(msg) {
   if (!token) return;
-  fetch(RELAY + "/lzst-" + token, { method: "POST", body: msg }).catch(function () {});
+  fetch(RELAY + "/lzst-" + token, { method: "POST", body: msg, headers: authHeaders() })
+    .catch(function () {});
   if (navigator.vibrate) navigator.vibrate(12);
 }
 
@@ -288,7 +299,7 @@ function connect() {
   if (es) { es.close(); es = null; }
   // since=30m: replay the recent backlog so a late-joining phone catches the
   // last published state; messages arrive oldest -> newest, last one wins
-  es = new EventSource(RELAY + "/lzst-" + token + "-s/sse?since=30m");
+  es = new EventSource(RELAY + "/lzst-" + token + "-s/sse?since=30m" + authQuery());
   es.onopen = function () { setConnected(true); publish("ping"); };
   es.onerror = function () { setConnected(false); };  // ES reconnects alone
   es.onmessage = function (ev) {
@@ -302,13 +313,20 @@ function connect() {
 }
 
 function pairWith(t) {
-  t = (t || "").trim().toLowerCase().replace(/^#/, "");
+  t = (t || "").trim().replace(/^#/, "");
+  // forma "canale@tk_...": la parte dopo la @ è l'access token ntfy
+  var at = t.indexOf("@");
+  if (at > -1) { auth = t.slice(at + 1).trim(); t = t.slice(0, at); }
+  t = t.toLowerCase();
   if (!/^[a-z0-9]{4,20}$/.test(t)) {
     $("pairerr").textContent = "invalid channel";
     return;
   }
   token = t;
-  try { localStorage.setItem("stageRemotePhoneToken", t); } catch (e) {}
+  try {
+    localStorage.setItem("stageRemotePhoneToken", t);
+    if (auth) localStorage.setItem("stageRemotePhoneAuth", auth);
+  } catch (e) {}
   $("pairerr").textContent = "";
   showCtl(true);
   connect();
@@ -320,8 +338,11 @@ $("token").addEventListener("keydown", function (e) {
 });
 $("unpair").onclick = function () {
   if (es) { es.close(); es = null; }
-  token = "";
-  try { localStorage.removeItem("stageRemotePhoneToken"); } catch (e) {}
+  token = ""; auth = "";
+  try {
+    localStorage.removeItem("stageRemotePhoneToken");
+    localStorage.removeItem("stageRemotePhoneAuth");
+  } catch (e) {}
   setConnected(false);
   showCtl(false);
 };
@@ -342,9 +363,15 @@ document.addEventListener("visibilitychange", function () {
 });
 lock();
 
-// auto-pair: #token in the URL wins, then the saved one
-var initial = (location.hash || "").replace("#", "").trim()
-  || (function () { try { return localStorage.getItem("stageRemotePhoneToken") || ""; } catch (e) { return ""; } })();
+// auto-pair: #channel[@tk] in the URL wins, then the saved pair
+var initial = (location.hash || "").replace("#", "").trim();
+if (!initial) {
+  try {
+    var sc = localStorage.getItem("stageRemotePhoneToken") || "";
+    var sa = localStorage.getItem("stageRemotePhoneAuth") || "";
+    if (sc) initial = sc + (sa ? "@" + sa : "");
+  } catch (e) {}
+}
 if (initial) { $("token").value = initial; pairWith(initial); }
 </script>
 </body>
