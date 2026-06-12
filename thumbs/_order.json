@@ -1,0 +1,178 @@
+[
+ {
+  "id": "IDLE-0",
+  "cue": "[pre-show: terminale idle, banner voice mode a vista]"
+ },
+ {
+  "id": "CLIP-01",
+  "cue": "Avete domande?"
+ },
+ {
+  "id": "CLIP-02",
+  "cue": "Aspetta... non ho le slide."
+ },
+ {
+  "id": "S2",
+  "cue": "[gattino calico]"
+ },
+ {
+  "id": "S3",
+  "cue": "[gattino bianco, braccia alzate]"
+ },
+ {
+  "id": "S1",
+  "cue": "Ecco. Dicevamo."
+ },
+ {
+  "id": "CLIP-03",
+  "cue": "Gli passate ordine, amplifica ordine."
+ },
+ {
+  "id": "S-MAP1",
+  "cue": "Andavo lì tutto bello ringalluzzito:"
+ },
+ {
+  "id": "S-MAP2",
+  "cue": "no, guarda, quella parte lì non guardarla."
+ },
+ {
+  "id": "S-MAP3",
+  "cue": "E questa qui invece?"
+ },
+ {
+  "id": "S-MAP4",
+  "cue": "Però è l'unica parte che è così."
+ },
+ {
+  "id": "CLIP-04",
+  "cue": "E mica vi giudica."
+ },
+ {
+  "id": "CLIP-04-panel",
+  "cue": "E mica vi giudica. [pannello aperto]"
+ },
+ {
+  "id": "IDLE-B6",
+  "cue": "[dopo la risata sulla Barbie: click, il pannello si chiude. 'Però... impara' + paradosso a schermo muto]"
+ },
+ {
+  "id": "S-ARCH",
+  "cue": "Un sistema di gestione ordini, io, ho imparato a farlo così:"
+ },
+ {
+  "id": "S-SBA",
+  "cue": "Questa codebase invece era fatta così."
+ },
+ {
+  "id": "IDLE-1",
+  "cue": "[beat 8-10: Andrea, il click junior=agente, la transizione. Terminale presente, muto.]"
+ },
+ {
+  "id": "CLIP-IH1",
+  "cue": "...provo a ridirvela per come l'ho capita io."
+ },
+ {
+  "id": "CLIP-IH3",
+  "cue": "Va beh. Allora raccontala tu."
+ },
+ {
+  "id": "CLIP-IH4",
+  "cue": "È chiarissimo, no?"
+ },
+ {
+  "id": "S4b0",
+  "cue": "...Ve la traduco io."
+ },
+ {
+  "id": "S4b1",
+  "cue": "ma questa cosa l'ho già vista?"
+ },
+ {
+  "id": "S4b2",
+  "cue": "L'ultima volta che l'ho vista, che cos'è che veniva dopo?"
+ },
+ {
+  "id": "S4c",
+  "cue": "E quindi lui vede catch, e predice log."
+ },
+ {
+  "id": "S4d",
+  "cue": "...in quel caso lì potrebbe causare un errore."
+ },
+ {
+  "id": "CLIP-05",
+  "cue": "...lui lo ripete tale e quale."
+ },
+ {
+  "id": "IDLE-2",
+  "cue": "[beat 1-2: 'la coerenza conta' + 'la mia vecchia codebase era complessa, il modello non capiva'. Terminale muto.]"
+ },
+ {
+  "id": "CLIP-b2",
+  "cue": "...una volta non faceva l'interfaccia, una volta il mapper."
+ },
+ {
+  "id": "CLIP-09",
+  "cue": "Il codice che un junior riesce a leggere è lo stesso che l'agente riesce a capire."
+ },
+ {
+  "id": "IDLE-LUTTO",
+  "cue": "[beat 14-15: 'sì ma se non regge, il costo non lo paghi più tu' + il lutto ('ho dovuto disimparare, fa più male che imparare'). Terminale muto, niente clip.]"
+ },
+ {
+  "id": "S-PRINC",
+  "cue": "...i principi che guidavano quella roba. Ve li ribalto."
+ },
+ {
+  "id": "CLIP-b7",
+  "cue": "Nomi onesti: contano per gli umani, a maggior ragione per l'agente."
+ },
+ {
+  "id": "S-RULE",
+  "cue": "...trasponilo, portalo in quel folder. [slide, poi: 'Una roba così.']"
+ },
+ {
+  "id": "CLIP-84",
+  "cue": "...la risposta spero sia chiara: è la vostra codebase."
+ },
+ {
+  "id": "IDLE-3",
+  "cue": "[Dario: lui il DOVE, io il COME, e 'quella parte lì, la vostra codebase, è il prompt vero'. Poi giudicatevi voi come un estraneo/junior (Barbie solo citata). Chiusa: 'il vostro Claude lavorerà meglio CON voi, perché la vostra codebase sarà diventata il vostro prompt'. Grazie.]"
+ },
+ {
+  "id": "CLIP-10",
+  "cue": "[dopo l'applauso della chiusa: click, la macchina si prende l'ultima parola. S-QR pre-clip RIMOSSA 12/06]"
+ },
+ {
+  "id": "S-QR-QA1",
+  "cue": "[dopo il 'Forse.': click → QR. QUI l'hand-off ad Andrea, poi resta come sfondo del Q&A]"
+ },
+ {
+  "id": "QA-1",
+  "cue": "Vuoi rispondere tu a questa?"
+ },
+ {
+  "id": "S-QR-QA2",
+  "cue": "[torna al QR, seconda domanda]"
+ },
+ {
+  "id": "QA-2",
+  "cue": "Ci riprova..."
+ },
+ {
+  "id": "S-QR-QA3",
+  "cue": "[torna al QR, terza domanda]"
+ },
+ {
+  "id": "QA-3",
+  "cue": "Niente, non ce la può fare..."
+ },
+ {
+  "id": "S-KITTEN",
+  "cue": "[il gattino di riserva. Il cerchio si chiude.]"
+ },
+ {
+  "id": "S-QR-END",
+  "cue": "[backdrop finale del Q&A]"
+ }
+]
