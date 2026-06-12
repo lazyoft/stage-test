@@ -174,5 +174,21 @@
  {
   "id": "S-QR-END",
   "cue": "[backdrop finale del Q&A]"
+ },
+ {
+  "id": "QA-DRY",
+  "cue": "[Q&A, a richiesta: DRY per davvero]"
+ },
+ {
+  "id": "QA-LVE",
+  "cue": "[Q&A: le tre fasi, il ritmo di ogni file]"
+ },
+ {
+  "id": "QA-LIMITS",
+  "cue": "[Q&A, a richiesta: dove si ferma]"
+ },
+ {
+  "id": "QA-FIG",
+  "cue": "[Q&A, a richiesta: ho un legacy, da dove comincio]"
  }
 ]
