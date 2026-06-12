@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -96,35 +96,35 @@
 
 <div id="pair">
   <h1>stage remote <span class="accent">· pairing</span></h1>
-  <p>Sul laptop di palco premi <b>p</b>: appare il canale. Scrivilo qui
-     (o apri direttamente il link col #canale).</p>
+  <p>On the stage laptop press <b>p</b>: a channel appears. Type it here
+     (or open the link with the #channel in it).</p>
   <input id="token" inputmode="text" autocomplete="off" autocapitalize="none"
-         spellcheck="false" placeholder="canale">
-  <button id="connect">Collega</button>
+         spellcheck="false" placeholder="channel">
+  <button id="connect">Connect</button>
   <p id="pairerr" style="color:#d97757"></p>
 </div>
 
 <div id="ctl">
   <header>
     <div id="dot"></div>
-    <button id="scene">in attesa del deck…</button>
-    <button id="unpair">cambia canale</button>
+    <button id="scene">waiting for the deck…</button>
+    <button id="unpair">change channel</button>
   </header>
   <div id="notes">
     <div id="gobbo"></div>
-    <div id="nextlabel">prossima</div>
+    <div id="nextlabel">next</div>
     <img id="nextthumb" alt="">
   </div>
   <div id="buttons">
-    <button class="nav" id="prev">← indietro</button>
-    <button class="nav" id="next">AVANTI</button>
+    <button class="nav" id="prev">← back</button>
+    <button class="nav" id="next">NEXT</button>
   </div>
 </div>
 
 <div id="list">
   <div id="listhead">
-    <span>vai a scena · tocca per saltare</span>
-    <button id="listclose">chiudi</button>
+    <span>go to scene · tap to jump</span>
+    <button id="listclose">close</button>
   </div>
   <div id="listrows"></div>
 </div>
@@ -190,7 +190,7 @@ function renderList() {
   if (!sceneList.length) {
     var d = document.createElement("div");
     d.className = "lrow";
-    d.textContent = "aspetto l'elenco dal deck…";
+    d.textContent = "waiting for the scene list…";
     box.appendChild(d);
     return;
   }
@@ -237,7 +237,7 @@ function connect() {
 function pairWith(t) {
   t = (t || "").trim().toLowerCase().replace(/^#/, "");
   if (!/^[a-z0-9]{4,20}$/.test(t)) {
-    $("pairerr").textContent = "canale non valido";
+    $("pairerr").textContent = "invalid channel";
     return;
   }
   token = t;
