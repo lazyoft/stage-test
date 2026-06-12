@@ -76,22 +76,20 @@
   #unpair { margin-left: auto; color: #8a8678; background: none; border: 0;
             font: inherit; font-size: .72rem; text-decoration: underline; flex: none; }
   #notes { flex: 1; overflow-y: auto; padding: .3rem 1rem .5rem; min-height: 0; }
-  #cue { color: #8a8678; font-size: .8rem; line-height: 1.45; }
-  #gobbo { font-size: 1rem; line-height: 1.5; white-space: pre-wrap; margin-top: .5rem; }
-  #nextcue { color: #8a8678; font-size: .8rem; line-height: 1.45; margin-top: .8rem;
-             padding-top: .6rem; border-top: 1px solid #2e2c25; }
-  #nextcue .nid { color: #d97757; }
+  #gobbo { font-size: 1rem; line-height: 1.5; white-space: pre-wrap; }
+  #nextlabel { display: none; color: #8a8678; font-size: .7rem; margin-top: .7rem; }
+  #nextlabel.show { display: block; }
   #nextthumb {
-    display: none; width: 100%; max-height: 24vh; object-fit: contain;
-    margin-top: .5rem; border: 1px solid #2e2c25; border-radius: 8px;
+    display: none; width: 100%; max-height: 30vh; object-fit: contain;
+    margin-top: .25rem; border: 1px solid #2e2c25; border-radius: 8px;
     background: #000;
   }
   #nextthumb.show { display: block; }
-  #buttons { display: flex; flex-direction: column; height: 52vh; padding: .6rem; gap: .6rem; flex: none; }
+  #buttons { display: flex; flex-direction: column; height: 30vh; padding: .6rem; gap: .6rem; flex: none; }
   button.nav { border: 0; border-radius: 14px; font: inherit; font-weight: 700; }
   button.nav:active { filter: brightness(1.3); }
-  #prev { flex: 1; background: #26241d; color: #8a8678; font-size: 1rem; }
-  #next { flex: 4; background: #d97757; color: #1a1815; font-size: 2rem; letter-spacing: .1em; }
+  #prev { flex: 1; background: #26241d; color: #8a8678; font-size: .95rem; }
+  #next { flex: 3; background: #d97757; color: #1a1815; font-size: 1.6rem; letter-spacing: .1em; }
 </style>
 </head>
 <body>
@@ -113,9 +111,8 @@
     <button id="unpair">cambia canale</button>
   </header>
   <div id="notes">
-    <div id="cue"></div>
     <div id="gobbo"></div>
-    <div id="nextcue"></div>
+    <div id="nextlabel">prossima</div>
     <img id="nextthumb" alt="">
   </div>
   <div id="buttons">
@@ -158,24 +155,22 @@ var listParts = {}, listTot = null;
 function onState(st) {
   curIndex = st.i || 0;
   $("scene").textContent = st.id + (st.i > 0 ? " · " + st.i + "/" + st.n : "");
-  $("cue").textContent = st.cue || "";
   $("gobbo").textContent = st.gobbo || "";
-  $("nextcue").innerHTML = st.nextId
-    ? 'prossima: <span class="nid"></span> '
-    : "";
-  if (st.nextId) {
-    $("nextcue").querySelector(".nid").textContent = st.nextId;
-    $("nextcue").appendChild(document.createTextNode("· " + (st.nextCue || "")));
-  }
   // anteprima della prossima scena: thumbs/<id>.jpg accanto al companion
   // (generati con gen_thumbs.js; se mancano, l'immagine resta nascosta)
   var th = $("nextthumb");
   if (st.nextId) th.src = "thumbs/" + encodeURIComponent(st.nextId) + ".jpg";
-  else { th.removeAttribute("src"); th.classList.remove("show"); }
+  else { th.removeAttribute("src"); th.classList.remove("show"); $("nextlabel").classList.remove("show"); }
   if ($("list").classList.contains("show")) renderList();
 }
-$("nextthumb").onload = function () { this.classList.add("show"); };
-$("nextthumb").onerror = function () { this.classList.remove("show"); };
+$("nextthumb").onload = function () {
+  this.classList.add("show");
+  $("nextlabel").classList.add("show");
+};
+$("nextthumb").onerror = function () {
+  this.classList.remove("show");
+  $("nextlabel").classList.remove("show");
+};
 
 function onListChunk(msg) {
   listTot = msg.tot;
