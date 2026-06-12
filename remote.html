@@ -94,8 +94,16 @@
   #fb.ok { color: #7ec46a; }
   #fb.noack { color: #e05a4e; }
   #buttons { display: flex; flex-direction: column; height: 30vh; padding: .3rem .6rem .6rem; gap: .6rem; flex: none; }
-  button.nav { border: 0; border-radius: 14px; font: inherit; font-weight: 700; }
+  button.nav {
+    border: 3px solid transparent; border-radius: 14px; font: inherit; font-weight: 700;
+    transition: border-color .15s, filter .15s;
+  }
   button.nav:active { filter: brightness(1.3); }
+  /* feedback ack ANCHE sul bottone: iOS Safari non ha la vibrazione web,
+     quindi il bottone stesso lampeggia (più visibile della riga di testo) */
+  button.nav.sent { filter: brightness(.8); }
+  button.nav.ok { border-color: #7ec46a; filter: none; }
+  button.nav.bad { border-color: #e05a4e; filter: none; }
   #prev { flex: 1; background: #26241d; color: #8a8678; font-size: .95rem; }
   #next { flex: 3; background: #d97757; color: #1a1815; font-size: 1.6rem; letter-spacing: .1em; }
 </style>
@@ -163,6 +171,7 @@ function publish(msg) {
    buzz: ONLY then a second tap makes sense (anti double-tap). ---- */
 var ACK_TIMEOUT = 2500;
 var seqCounter = 0, pendingSeq = null, ackTimer = null, fbTimer = null;
+var pendingBtn = null;   // the tapped button also flashes (no vibration on iOS)
 
 function setFb(cls, text) {
   var el = $("fb");
@@ -170,16 +179,26 @@ function setFb(cls, text) {
   el.textContent = text || "";
 }
 
-function sendCmd(cmd) {
+function setBtn(cls) {
+  if (!pendingBtn) return;
+  pendingBtn.classList.remove("sent", "ok", "bad");
+  if (cls) pendingBtn.classList.add(cls);
+}
+
+function sendCmd(cmd, btn) {
   var q = String(++seqCounter);
   pendingSeq = q;
+  if (pendingBtn) pendingBtn.classList.remove("sent", "ok", "bad");
+  pendingBtn = btn || null;
   clearTimeout(ackTimer); clearTimeout(fbTimer);
   setFb("sent", "→ sent…");
+  setBtn("sent");
   publish(cmd + "#" + q);
   ackTimer = setTimeout(function () {
     if (pendingSeq === q) {
       pendingSeq = null;
       setFb("noack", "✗ no ack from the deck — check, then tap again");
+      setBtn("bad");
       if (navigator.vibrate) navigator.vibrate(250);
     }
   }, ACK_TIMEOUT);
@@ -190,8 +209,9 @@ function onAck(msg) {
   pendingSeq = null;
   clearTimeout(ackTimer);
   setFb("ok", "✓ received");
+  setBtn("ok");
   if (navigator.vibrate) navigator.vibrate(35);
-  fbTimer = setTimeout(function () { setFb("", ""); }, 900);
+  fbTimer = setTimeout(function () { setFb("", ""); setBtn(null); }, 900);
 }
 
 var curIndex = 0;          // 1-based index of the scene on the deck (0 = gate)
@@ -306,8 +326,8 @@ $("unpair").onclick = function () {
   showCtl(false);
 };
 
-$("next").onclick = function () { sendCmd("next"); };
-$("prev").onclick = function () { sendCmd("prev"); };
+$("next").onclick = function () { sendCmd("next", this); };
+$("prev").onclick = function () { sendCmd("prev", this); };
 $("scene").onclick = openList;
 $("listclose").onclick = closeList;
 
