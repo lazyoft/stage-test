@@ -85,7 +85,15 @@
     background: #000;
   }
   #nextthumb.show { display: block; }
-  #buttons { display: flex; flex-direction: column; height: 30vh; padding: .6rem; gap: .6rem; flex: none; }
+  #fb {
+    height: 1.15rem; margin: 0 .6rem; flex: none;
+    font-size: .75rem; line-height: 1.15rem; text-align: center;
+    color: transparent; transition: color .15s;
+  }
+  #fb.sent { color: #8a8678; }
+  #fb.ok { color: #7ec46a; }
+  #fb.noack { color: #e05a4e; }
+  #buttons { display: flex; flex-direction: column; height: 30vh; padding: .3rem .6rem .6rem; gap: .6rem; flex: none; }
   button.nav { border: 0; border-radius: 14px; font: inherit; font-weight: 700; }
   button.nav:active { filter: brightness(1.3); }
   #prev { flex: 1; background: #26241d; color: #8a8678; font-size: .95rem; }
@@ -115,6 +123,7 @@
     <div id="nextlabel">next</div>
     <img id="nextthumb" alt="">
   </div>
+  <div id="fb"></div>
   <div id="buttons">
     <button class="nav" id="prev">← back</button>
     <button class="nav" id="next">NEXT</button>
@@ -146,6 +155,43 @@ function publish(msg) {
   if (!token) return;
   fetch(RELAY + "/lzst-" + token, { method: "POST", body: msg }).catch(function () {});
   if (navigator.vibrate) navigator.vibrate(12);
+}
+
+/* ---- command feedback: every nav command carries a "#<seq>"; the deck
+   acks it on the state topic BEFORE executing. Tap -> "sent…", ack ->
+   "✓ received" + short buzz, no ack within ACK_TIMEOUT -> red line + long
+   buzz: ONLY then a second tap makes sense (anti double-tap). ---- */
+var ACK_TIMEOUT = 2500;
+var seqCounter = 0, pendingSeq = null, ackTimer = null, fbTimer = null;
+
+function setFb(cls, text) {
+  var el = $("fb");
+  el.className = cls || "";
+  el.textContent = text || "";
+}
+
+function sendCmd(cmd) {
+  var q = String(++seqCounter);
+  pendingSeq = q;
+  clearTimeout(ackTimer); clearTimeout(fbTimer);
+  setFb("sent", "→ sent…");
+  publish(cmd + "#" + q);
+  ackTimer = setTimeout(function () {
+    if (pendingSeq === q) {
+      pendingSeq = null;
+      setFb("noack", "✗ no ack from the deck — check, then tap again");
+      if (navigator.vibrate) navigator.vibrate(250);
+    }
+  }, ACK_TIMEOUT);
+}
+
+function onAck(msg) {
+  if (msg.q !== pendingSeq) return;   // stale ack (late or duplicate)
+  pendingSeq = null;
+  clearTimeout(ackTimer);
+  setFb("ok", "✓ received");
+  if (navigator.vibrate) navigator.vibrate(35);
+  fbTimer = setTimeout(function () { setFb("", ""); }, 900);
 }
 
 var curIndex = 0;          // 1-based index of the scene on the deck (0 = gate)
@@ -202,7 +248,7 @@ function renderList() {
     var c = document.createElement("span"); c.className = "lc"; c.textContent = s.c || "";
     row.appendChild(n); row.appendChild(id); row.appendChild(c);
     row.onclick = function () {
-      publish("goto:" + s.i);
+      sendCmd("goto:" + s.i);
       closeList();
     };
     box.appendChild(row);
@@ -229,6 +275,7 @@ function connect() {
     try {
       var msg = JSON.parse(JSON.parse(ev.data).message);
       if (msg.t === "list") onListChunk(msg);
+      else if (msg.t === "ack") onAck(msg);
       else onState(msg);
     } catch (e) {}
   };
@@ -259,8 +306,8 @@ $("unpair").onclick = function () {
   showCtl(false);
 };
 
-$("next").onclick = function () { publish("next"); };
-$("prev").onclick = function () { publish("prev"); };
+$("next").onclick = function () { sendCmd("next"); };
+$("prev").onclick = function () { sendCmd("prev"); };
 $("scene").onclick = openList;
 $("listclose").onclick = closeList;
 
